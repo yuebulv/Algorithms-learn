@@ -1,0 +1,24 @@
+def quick_sort(alist,first,last):
+    #找出一个元素在序列中的正确位置，然后递归
+    if first>= last:
+        return
+    mid_value=alist[first]
+    low=first
+    high=last
+    while low<high:
+        while low < high and alist[high]>=mid_value:
+            high-=1
+        alist[low]=alist[high]
+        print(li)
+        while low<high and alist[low]<mid_value:
+            low+=1
+        alist[high]=alist[low]
+        print(li)
+    alist[low]=mid_value    #最终low和high会相等，即找到了first元素位置
+    quick_sort(alist,first,low-1)
+    quick_sort(alist,low+1,last)
+
+li=[3,5,55,3,4,88,3,5,4,8,2,1,9,67]
+print(li)
+quick_sort(li,0,len(li)-1)
+print(li)

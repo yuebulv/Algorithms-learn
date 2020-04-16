@@ -1,0 +1,11 @@
+def bubbl_sort(alist):
+    #每次找一个最大元素
+    for j in range(len(alist)-1,0,-1):
+        for i in range(0,j):
+            if alist[i]>alist[i+1]:
+                alist[i],alist[i+1]=alist[i+1],alist[i]
+
+li=[1,5,55,3,4,88,3,5,4,8,2,1,9,67]
+bubbl_sort(li)
+print(li)
+
