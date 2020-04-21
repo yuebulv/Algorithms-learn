@@ -1,6 +1,7 @@
 import os
 """
     批量重命名文件名
+    命名规则：将含中文文件名/文件夹名转为不含中文文件名/文件夹，并原/现文件名存入filename.txt/dirnewnametxt
 """
 def show_files(path, all_files):
     files = os.listdir(path)
@@ -13,20 +14,21 @@ def show_files(path, all_files):
         if os.path.isdir(path + '/' + file):#判断是否为文件夹，并修改文件夹名字
             # print(path + '/' + file)
             show_files(path + '/' + file, all_files)
-            dirnewname = str(dirnumber) + "rename"
-            while os.path.exists(path + '/' + dirnewname): #判断是否已存在文件名
+            if is_contain_chinese(file) :
+                dirnewname = str(dirnumber) + "rename"
+                while os.path.exists(path + '/' + dirnewname): #判断是否已存在文件名
+                    dirnumber += 1
+                    dirnewname=str(dirnumber)+"rename"
+                os.rename(path + '/' + file, path + '/' + dirnewname)
+                if firstopendirname == 0 and os.path.exists(path + '/dirname.txt'):
+                    os.remove(path + '/dirname.txt')
+                    firstopendirname = 1
+                with open(path + '/' + 'dirname.txt', 'a') as f:#记录文件名
+                    f.write(file+'\t'+dirnewname+"\n")
+                    f.close()
+                    firstopendirname = 1
                 dirnumber += 1
-                dirnewname=str(dirnumber)+"rename"
-            os.rename(path + '/' + file, path + '/' + dirnewname)
-            if firstopendirname == 0 and os.path.exists(path + '/dirname.txt'):
-                os.remove(path + '/dirname.txt')
-                firstopendirname = 1
-            with open(path + '/' + 'dirname.txt', 'a') as f:#记录文件名
-                f.write(file+'\t'+dirnewname+"\n")
-                f.close()
-                firstopendirname = 1
-            dirnumber += 1
-        elif os.path.isfile(path + '/' + file) and (file.find('filename.txt')<0)and (file.find('dirname.txt')<0):
+        elif os.path.isfile(path + '/' + file) and (file.find('filename.txt')<0)and (file.find('dirname.txt')<0)and is_contain_chinese(file) :
             filenewname=file.split(".")
             if len(filenewname)>1:
                 filenewname[0] = str(filenumber) + "rename." + filenewname[len(filenewname) - 1]
@@ -49,6 +51,16 @@ def show_files(path, all_files):
             filenumber += 1
     return all_files
 
+def is_contain_chinese(check_str):
+    """
+    判断字符串中是否包含中文
+    :param check_str: {str} 需要检测的字符串
+    :return: {bool} 包含返回True， 不包含返回False
+    """
+    for ch in check_str:
+        if u'\u4e00' <= ch <= u'\u9fff':
+            return True
+    return False
 
 list_a = []
 import tkinter as tk
